@@ -151,26 +151,48 @@ wire cpu_clken = isGBC && hdma_active ? 1'b0 :current_cpu_ce;  //when hdma is en
 wire cpu_stop;
 
 	
-GBse cpu (
-	.RESET_n    ( !reset        ),
-	.CLK_n      ( clk_sys       ),
-	.CLKEN      ( cpu_clken     ),
-	.WAIT_n     ( 1'b1          ),
-	.INT_n      ( irq_n         ),
-	.NMI_n      ( 1'b1          ),
-	.BUSRQ_n    ( 1'b1          ),
-   .M1_n       ( cpu_m1_n      ),
-   .MREQ_n     ( cpu_mreq_n    ),
-   .IORQ_n     ( cpu_iorq_n    ),
-   .RD_n       ( cpu_rd_n      ),
-   .WR_n       ( cpu_wr_n      ),
-   .RFSH_n     (               ),
-   .HALT_n     (               ),
-   .BUSAK_n    (               ),
+//GBse cpu (
+//	.RESET_n    ( !reset        ),
+//	.CLK_n      ( clk_sys       ),
+//	.CLKEN      ( cpu_clken     ),
+//	.WAIT_n     ( 1'b1          ),
+//	.INT_n      ( irq_n         ),
+//	.NMI_n      ( 1'b1          ),
+//	.BUSRQ_n    ( 1'b1          ),
+//   .M1_n       ( cpu_m1_n      ),
+//   .MREQ_n     ( cpu_mreq_n    ),
+//   .IORQ_n     ( cpu_iorq_n    ),
+//   .RD_n       ( cpu_rd_n      ),
+//   .WR_n       ( cpu_wr_n      ),
+//   .RFSH_n     (               ),
+//   .HALT_n     (               ),
+//   .BUSAK_n    (               ),
+//   .A          ( cpu_addr      ),
+//   .DI         ( genie_ovr ? genie_data : cpu_di),
+//   .DO         ( cpu_do        ),
+//	.STOP       ( cpu_stop      )
+//);
+
+tv80s cpu (
+	.reset_n    ( !reset        ),
+	.clk        ( clk_sys       ),
+	.cen        ( cpu_clken     ),
+	.wait_n     ( 1'b1          ),
+	.int_n      ( irq_n         ),
+	.nmi_n      ( 1'b1          ),
+	.busrq_n    ( 1'b1          ),
+   .m1_n       ( cpu_m1_n      ),
+   .mreq_n     ( cpu_mreq_n    ),
+   .iorq_n     ( cpu_iorq_n    ),
+   .rd_n       ( cpu_rd_n      ),
+   .wr_n       ( cpu_wr_n      ),
+   .rfsh_n     (               ),
+   .halt_n     (               ),
+   .busak_n    (               ),
    .A          ( cpu_addr      ),
-   .DI         ( genie_ovr ? genie_data : cpu_di),
-   .DO         ( cpu_do        ),
-	.STOP       ( cpu_stop      )
+   .di         ( genie_ovr ? genie_data : cpu_di),
+   .dout       ( cpu_do        ),
+	.stop       ( cpu_stop      )
 );
 
 // --------------------------------------------------------------------
