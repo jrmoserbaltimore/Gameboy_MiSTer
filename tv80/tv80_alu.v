@@ -29,7 +29,7 @@ module tv80_alu (/*AUTOARG*/
   Arith16, Z16, ALU_Op, IR, ISet, BusA, BusB, F_In
   );
 
-  parameter		Mode   = 0;
+  parameter		Mode   = 3;
   parameter		Flag_C = 0;
   parameter		Flag_N = 1;
   parameter		Flag_P = 2;

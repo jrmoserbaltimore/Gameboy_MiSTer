@@ -35,7 +35,7 @@ module tv80_mcode
   IR, ISet, MCycle, F, NMICycle, IntCycle
   );
   
-  parameter             Mode   = 0;
+  parameter             Mode   = 3;
   parameter             Flag_C = 0;
   parameter             Flag_N = 1;
   parameter             Flag_P = 2;
@@ -44,6 +44,11 @@ module tv80_mcode
   parameter             Flag_Y = 5;
   parameter             Flag_Z = 6;
   parameter             Flag_S = 7;
+  
+  parameter             Flag_GB_C = 4;
+  parameter             Flag_GB_H = 5;
+  parameter             Flag_GB_N = 6;
+  parameter             Flag_GB_Z = 7;
 
   input [7:0]           IR;
   input [1:0]           ISet                    ;
@@ -168,10 +173,10 @@ module tv80_mcode
       if (Mode == 3 ) 
         begin
           case (cc)
-            3'b000  : is_cc_true = FF[7] == 1'b0; // NZ
-            3'b001  : is_cc_true = FF[7] == 1'b1; // Z
-            3'b010  : is_cc_true = FF[4] == 1'b0; // NC
-            3'b011  : is_cc_true = FF[4] == 1'b1; // C
+            3'b000  : is_cc_true = F[Flag_GB_Z] == 1'b0; // NZ
+            3'b001  : is_cc_true = F[Flag_GB_Z] == 1'b1; // Z
+            3'b010  : is_cc_true = F[Flag_GB_C] == 1'b0; // NC
+            3'b011  : is_cc_true = F[Flag_GB_C] == 1'b1; // C
             3'b100  : is_cc_true = 0;
             3'b101  : is_cc_true = 0;
             3'b110  : is_cc_true = 0;
@@ -782,7 +787,7 @@ module tv80_mcode
                           begin
                             Jump = 1'b1;
                             IncDec_16 = 4'b0111;
-                            I_RETN = 1'b1;
+                            //I_RETN = 1'b1;       //CHANGED
                             SetEI = 1'b1;
                           end
                         default :;
@@ -1037,44 +1042,113 @@ module tv80_mcode
                       
                     end 
                   else if (IntCycle == 1'b1 ) 
+						    //CHANGED
+//                    begin
+//                      // INT (IM 2)
+//                      MCycles = 3'b101;
+//                      case (1'b1) // MCycle
+//                        MCycle[0] :
+//                          begin
+//                            LDZ = 1'b1;
+//                            TStates = 3'b101;
+//                            IncDec_16 = 4'b1111;
+//                            Set_Addr_To = aSP;
+//                            Set_BusB_To = 4'b1101;
+//                          end
+//                        
+//                        MCycle[1] :
+//                          begin
+//                            TStates = 3'b100;
+//                            Write = 1'b1;
+//                            IncDec_16 = 4'b1111;
+//                            Set_Addr_To = aSP;
+//                            Set_BusB_To = 4'b1100;
+//                          end
+//                        
+//                        MCycle[2] :
+//                          begin
+//                            TStates = 3'b100;
+//                            Write = 1'b1;
+//                          end
+//                        
+//                        MCycle[3] :
+//                          begin
+//                            Inc_PC = 1'b1;
+//                            LDZ = 1'b1;
+//                          end
+//                        
+//                        MCycle[4] :
+//                          Jump = 1'b1;
+//                        default :;
+//                      endcase
+//                    end
                     begin
-                      // INT (IM 2)
-                      MCycles = 3'b101;
-                      case (1'b1) // MCycle
-                        MCycle[0] :
-                          begin
-                            LDZ = 1'b1;
-                            TStates = 3'b101;
-                            IncDec_16 = 4'b1111;
-                            Set_Addr_To = aSP;
-                            Set_BusB_To = 4'b1101;
-                          end
-                        
-                        MCycle[1] :
-                          begin
-                            TStates = 3'b100;
-                            Write = 1'b1;
-                            IncDec_16 = 4'b1111;
-                            Set_Addr_To = aSP;
-                            Set_BusB_To = 4'b1100;
-                          end
-                        
-                        MCycle[2] :
-                          begin
-                            TStates = 3'b100;
-                            Write = 1'b1;
-                          end
-                        
-                        MCycle[3] :
-                          begin
-                            Inc_PC = 1'b1;
-                            LDZ = 1'b1;
-                          end
-                        
-                        MCycle[4] :
-                          Jump = 1'b1;
-                        default :;
-                      endcase
+						   if (Mode == 3) begin
+								 // INT (IM 2)
+								 MCycles = 3'b100;
+								 case (1'b1) // MCycle
+									MCycle[0] :
+									  begin
+										 LDZ = 1'b1;
+										 TStates = 3'b110;
+										 IncDec_16 = 4'b1111;
+										 Set_Addr_To = aSP;
+										 Set_BusB_To = 4'b1101;
+									  end
+									
+									MCycle[1] :
+									  begin
+										 Write = 1'b1;
+										 IncDec_16 = 4'b1111;
+										 Set_Addr_To = aSP;
+										 Set_BusB_To = 4'b1100;
+									  end
+									
+									MCycle[2] :
+									  begin
+										 Write = 1'b1;
+									  end
+									default :;
+								 endcase
+						   end else begin	
+								 // INT (IM 2)
+								 MCycles = 3'b101;
+								 case (1'b1) // MCycle
+									MCycle[0] :
+									  begin
+										 LDZ = 1'b1;
+										 TStates = 3'b101;
+										 IncDec_16 = 4'b1111;
+										 Set_Addr_To = aSP;
+										 Set_BusB_To = 4'b1101;
+									  end
+									
+									MCycle[1] :
+									  begin
+										 TStates = 3'b100;
+										 Write = 1'b1;
+										 IncDec_16 = 4'b1111;
+										 Set_Addr_To = aSP;
+										 Set_BusB_To = 4'b1100;
+									  end
+									
+									MCycle[2] :
+									  begin
+										 TStates = 3'b100;
+										 Write = 1'b1;
+									  end
+									
+									MCycle[3] :
+									  begin
+										 Inc_PC = 1'b1;
+										 LDZ = 1'b1;
+									  end
+									
+									MCycle[4] :
+									  Jump = 1'b1;
+									default :;
+								 endcase
+							 end
                     end
                 end // case: 8'b00000000
               
@@ -2601,7 +2675,7 @@ module tv80_mcode
         begin
           if (MCycle[0] ) 
             begin
-              //TStates = 3'b100;
+              //TStates = 3'b100;  //CHANGED
             end 
           else 
             begin

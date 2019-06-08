@@ -69,6 +69,7 @@ module tv80s (/*AUTOARG*/
   wire [6:0]    tstate;
 
   //assign    cen = 1;
+  
 
   tv80_core #(Mode, IOWait) i_tv80_core
     (
@@ -97,7 +98,7 @@ module tv80s (/*AUTOARG*/
      .intcycle_n (intcycle_n)
      );  
 
-  always @(posedge clk or negedge reset_n)
+  always @(posedge clk)
     begin
       if (!reset_n)
         begin
