@@ -223,23 +223,23 @@ module tv80_alu (/*AUTOARG*/
 			// After addition
 			// Alow > 9 || H == 1
 			if (DAA_Q[3:0] > 9 || F_In[Flag_H] == 1'b1 ) 
-				DAA_Q = DAA_Q + 6;
+				DAA_Q = DAA_Q + 9'd6;
 
 			// new Ahigh > 9 || C == 1
 			if (DAA_Q[8:4] > 9 || F_In[Flag_C] == 1'b1 ) 
-				DAA_Q = DAA_Q + 96; // 0x60
+				DAA_Q = DAA_Q + 9'd96; // 0x60
 		end 
 		else begin
 			// After subtraction
 			if (F_In[Flag_H] == 1'b1 ) 
 			begin
-				DAA_Q = DAA_Q - 6;
+				DAA_Q = DAA_Q - 9'd6;
 				if (F_In[Flag_C] == 1'b0)
 					DAA_Q[8] = 1'b0; 
 			end
 
 			if (F_In[Flag_C] == 1'b1 ) 
-				DAA_Q = DAA_Q - 96; // 0x60
+				DAA_Q = DAA_Q - 9'd96; // 0x60
 		end 
 			
 				

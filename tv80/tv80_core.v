@@ -1069,7 +1069,7 @@ module tv80_core (/*AUTOARG*/
     end // always @ *
   
   
-  always @(/*AUTOSENSE*/ExchangeDH or ID16 or IncDec_16 or RegBusA_r or RegBusB or Save_Mux or mcycle or tstate or LDHLSP)
+  always @(/*AUTOSENSE*/ExchangeDH or ID16 or IncDec_16 or RegBusA_r or RegBusB or Save_Mux or mcycle or tstate or LDHLSP or SP16)
     begin
       RegDIH = Save_Mux;
       RegDIL = Save_Mux;
@@ -1425,7 +1425,7 @@ module tv80_core (/*AUTOARG*/
 
 
   always @(/*AUTOSENSE*/BTR_r or DI_Reg or IncDec_16 or JumpE or PC
-	   or RegBusA or RegBusC or SP or tstate or LDHLSP or ADDSPdd)
+	   or RegBusA or RegBusC or SP or tstate or LDHLSP or ADDSPdd or mcycle or SP16)
     begin
       if (JumpE == 1'b1 ) 
         begin
