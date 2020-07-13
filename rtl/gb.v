@@ -233,6 +233,7 @@ wire audio_wr = !cpu_wr_n && sel_audio;
 wire [7:0] audio_do;
 
 gbc_snd audio (
+//GBCSound audio ( // to test the SystemVerilog port
 	.clk				( clk_sys			),
 	.ce            ( ce_2x           ),
 	.reset			( reset				),
