@@ -18,12 +18,13 @@
 // You should have received a copy of the GNU General Public License 
 // along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 //
+// Interface altered to use its own clock divider from ce_2x and to use
+// the cartridge bus as a universal address bus to access external things.
 
 module gb (
     input reset,
 
     input clk_sys,
-    input ce,
     input ce_2x,
 
     input fast_boot,
@@ -32,7 +33,8 @@ module gb (
     input isGBC_game,
 
     // cartridge interface
-    // can adress up to 1MB ROM
+    // all bank selection and storage device creation occurs via a
+    // controller behind this bus
     output [15:0] cart_addr,
     output cart_rd,
     output cart_wr,
@@ -71,6 +73,13 @@ module gb (
     input  serial_data_in,
     output serial_data_out
 );
+
+// halve the ce_2x clock to produce ce
+uwire ce;
+logic ce_div = '0;
+
+assign ce = ce_2x & ce_div;
+assign ce_div = reset ? '0 : ce_2x ? ~ce_div : ce_div;
 
 // include cpu
 wire [15:0] cpu_addr;
@@ -505,7 +514,7 @@ wire [7:0] vram_di = (hdma_rd&&isGBC)?
                                 8'hFF:
                             cpu_do;
 
-
+// FIXME: just do all this on the address bus abstracted from the GBC
 wire vram_wren = video_rd?1'b0:!vram_bank&&((hdma_rd&&isGBC)||cpu_wr_vram);
 wire vram1_wren = video_rd?1'b0:vram_bank&&((hdma_rd&&isGBC)||cpu_wr_vram);
 
